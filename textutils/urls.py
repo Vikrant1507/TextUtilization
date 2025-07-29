@@ -31,9 +31,3 @@ urlpatterns = [
     path('ex1',views.ex1,name='ex1'),
 ]
 
-# urlpatterns = [
-#     path('admin/', admin.site.urls),
-#     path('',views.index,name='index'),
-#
-#
-# ]

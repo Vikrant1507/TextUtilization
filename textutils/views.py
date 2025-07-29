@@ -6,35 +6,10 @@ from django.shortcuts import render
 #code before pipeling
 #code for pipeline
 def index(request):
-    # params={'name':'Vikky','Place':'Bangalore'}
-    return render(request,'index.html' )
-    # return HttpResponse("Hello Vikky")
-    # return HttpResponse('''Hello World i am Vikky <br>
-    #  <a href="http://127.0.0.1:8000/removepunc">RemovePunc Link Is Here</a><br>''')
-
+        return render(request,'index.html' )
 
 def about(request):
     return HttpResponse('''<h1>Vikky</h1> \n <a href="https://www.youtube.com/watch?v=AepgWsROO4k&list=PLu0W_9lII9ah7DDtYtflgwMwpT3xmjXY9&index=7">Code With Vikky</a>''')
-
-# def removepunc(request):
-#     #Get the text
-#     djtext = request.GET.get('text','default')
-#     print(djtext)
-#     #Analyze the text
-#     return HttpResponse("Remove <a href ='/'back</a>")
-
-# def capitalizefirst(request):
-#     return HttpResponse("cap first<a href='/'>back</a>")
-#
-# def newlineremover(request):
-#     return HttpResponse("newline remover<a href='/'>back</a>")
-#
-# def spaceremover(request):
-#     return HttpResponse("spaceremover <a href='/'>back</a>")
-#
-# def charcount(request):
-#     return HttpResponse("char count<a href='/'>back</a>")
-
 
 
 def analyze(request):
@@ -47,8 +22,7 @@ def analyze(request):
     newlineRemover = request.POST.get('newlineRemover','off')
     ExtraSpaceRemover = request.POST.get('ExtraSpaceRemover','off')
     CharacterCounter = request.POST.get('CharacterCounter','off')
-    # print(removepunc)
-    # print(djtext)
+
 
     # Analyze the text
     #checkbox is on
@@ -60,14 +34,14 @@ def analyze(request):
                 analyzed= analyzed + char
         params={'Purpose':'remove punctuations','analyzed_text': analyzed}
         djtext = analyzed
-        # return render(request, 'analyze.html', params)
+
     if(fullcaps == 'on'):
         analyzed =""
         for char in djtext:
             analyzed = analyzed +char.upper()
         params = {'Purpose': 'change to uppercase', 'analyzed_text': analyzed}
         djtext = analyzed
-        # return render(request, 'analyze.html', params)
+
     if(newlineRemover == 'on'):
         analyzed=""
         for char in djtext:
@@ -76,17 +50,16 @@ def analyze(request):
                 analyzed = analyzed + char
         params = {'Purpose': 'Remove Newline', 'analyzed_text': analyzed}
         djtext = analyzed
-        # return render(request, 'analyze.html', params)
-    if(ExtraSpaceRemover == 'on'):
+
+    if (ExtraSpaceRemover == 'on'):
         analyzed = ""
-        for index,char in enumerate(djtext):
-            if djtext[index] == " " and djtext[index+1] == " ":
-                pass
-            else:
-                analyzed = analyzed + char
-        params = {'Purpose': 'ExtraSpaceRemover', 'analyzed_text': analyzed}
+        for index in range(len(djtext) - 1):  # loop only till second last char
+            if not (djtext[index] == " " and djtext[index + 1] == " "):
+                analyzed += djtext[index]
+        analyzed += djtext[-1]  # add the last character manually
+        params = {'purpose': 'Removed Extra Spaces', 'analyzed_text': analyzed}
         djtext = analyzed
-        # return render(request, 'analyze.html', params)
+
     if(CharacterCounter=='on'):
         analyzed = ""
         counter = 0
@@ -94,7 +67,7 @@ def analyze(request):
             counter+=1
         params = {'Purpose': 'ExtraSpaceRemover', 'analyzed_text': counter}
         djtext = analyzed
-        # return render(request, 'analyze.html', params)
+
     if(removepunc!="on" and fullcaps!="on" and newlineRemover!="on" and ExtraSpaceRemover!="on" and CharacterCounter!="on"):
         return HttpResponse("Please Select Any Operation and Try again")
     return render(request, 'analyze.html', params)
